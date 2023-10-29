@@ -1,56 +1,72 @@
-# AI & the Web project 1 of 4
-# Project Title
+AI & the Web Project 1 of 4
+Project Title: Search Engine
 
-## Description
-A brief description of what your project is about and what it does.
+Team Members
+- Waldo Ungerer
+- Mike Bediako Nsiah
 
-## Team Members
-- Member 1
-- Member 2
-- ...
+The search engine will crawl and parse all HTML pages on a certain server that can be reached directly or indirectly from a start URL by following links on the pages
 
-## Project Plan (generated with Bing AI, replace with Thelen's instructions)
+------------------
+Components:
 
-### Read Through Course Material
-- Understand the basics of search engines.
-- Learn about data structures and algorithms used in search engines.
-- Study different search engine architectures.
+1. Crawler
+2. Index
+3. Query parser and search algorithm
+4. User Frontend
+-------------------------------------------------------------------------------
 
-### Establish Project Plan
-- Define the scope of the project.
-- Decide on the features of the search engine.
-- Choose the programming languages and technologies to use.
-- Create a timeline for the project.
+Project Plan:
 
-### Set Up Development Environment
-- Set up a shared code repository (done).
-- Choose an integrated development environment (IDE).
-- Decide on a coding style and standards.
+X = done
+? = in progress
 
-### Design Search Engine Architecture
-- Design the crawler for gathering web pages.
-- Plan how to store and index the data.
-- Design the search algorithm.
+[] Define the scope of the project.
+[ ] Decide on the features of the search engine. (creativity +10)
+[ ] Create a timeline for the project. (weekly breakdown)
 
-### Implement Search Engine
-- Implement the crawler.
-- Set up the database and indexing system.
-- Implement the search algorithm.
+-------------------------------------------------------------------------------------------------------
 
-### Testing and Improvements
-- Test each component of the search engine.
-- Debug and fix issues.
-- Improve efficiency and performance.
+Week 1:
+[x] Create Python environment (Python 3.10.0, MacBook Air, VS Code, Pyenv “V1”)
+[x] Set up GitHub repo (each person to make own branch separate from main branch
+[x] Add .gitignore and requirements.txt files
+[x] Install “requests” and “BeautifulSoup” modules
 
-## To Do List
-- [ ] Read through course material.
-- [ ] Establish project plan.
-- [ ] Set up development environment.
-- [ ] Design search engine architecture.
-- [ ] Implement search engine.
-- [ ] Testing and improvements.
+---------------------------------------------------------------------------------------------------------------------------
 
-## How to Contribute
-Instructions for how team members can contribute to this project.
+[] Create a crawler.py file and define the skeleton of the crawling algorithm (build from pseudocode).
+- Crawl (=get and parse) all HTML pages on a certain server
+- that can directly or indirectly be reached from a start URL
+- by following links on the pages.
+- Do not follow links to URLs on other servers and only process HTML responses.
+- Test the crawler with a simple website, e.g., https://vm009.rz.uos.de/crawl/index.html
 
 
+[] Build an in-memory index from the HTML text content found (dictionary with words as keys and lists of URLs that refer to pages that include the word).
+
+[] Add a function ‘search’ that takes a list of words as a parameter and returns (by using the index) a list of links to all pages that contain all the words from the list.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+[] Debug and fix issues.
+
+[] Improve efficiency and performance.
+
+----------------------------------------------------------------
+
+
+How to Contribute:
+> Make your own branch separate from main branch.
+> Finish code in your branch.
+> Initiate pull request when ready.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+End goal: Submit the code and the link to the demo deployment by due date (17/11).
+
+Demonstrate it by crawling one website and making its content available to the user via a web frontend with a simple search form. 
+
+Make the result available on the provided demo server.
+
+Submit the code and the link to the demo deployment.
