@@ -1,10 +1,7 @@
 import requests  # For making HTTP requests
 from bs4 import BeautifulSoup  # For parsing HTML
 from urllib.parse import urljoin, urlparse  # For URL manipulation
-from whoosh import *
 from flask import *
-
-
 
 class Crawler:
     def __init__(self, start_url):
@@ -64,26 +61,3 @@ crawler.crawl(crawler.start_url)
 
 search_results = crawler.search(['word1', 'word2'])
 index = crawler.print_index()
-
-from whoosh.index import create_in
-from whoosh.fields import *
-from whoosh.qparser import QueryParser
-
-schema = Schema(title=TEXT(stored=True), path=ID(stored=True), content=TEXT)
-
-from whoosh.index import create_in
-import os
-index_dir = "indexdir"
-if not os.path.exists(index_dir):
-    os.mkdir(index_dir)
-ix = create_in(index_dir, schema)
-
-writer = ix.writer()
-for word, urls in crawler.index.items():
-    for url in urls:
-        writer.add_document(title=word, path=url, content=url)
-writer.commit()
-
-from whoosh.qparser import QueryParser
-query_parser = QueryParser("title", ix.schema)
-

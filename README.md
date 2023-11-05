@@ -1,10 +1,3 @@
-AI & the Web Project 1 of 4
-Project Title: Search Engine
-
-Team Members
-- Waldo Ungerer
-- Mike Bediako Nsiah
-
 The search engine will crawl and parse all HTML pages on a certain server that can be reached directly or indirectly from a start URL by following links on the pages
 
 ------------------
@@ -14,26 +7,6 @@ Components:
 2. Index
 3. Query parser and search algorithm
 4. User Frontend
--------------------------------------------------------------------------------
-
-Project Plan:
-
-X = done
-? = in progress
-
-[] Define the scope of the project.
-[ ] Decide on the features of the search engine. (creativity +10)
-[ ] Create a timeline for the project. (weekly breakdown)
-
--------------------------------------------------------------------------------------------------------
-
-Week 1:
-[x] Create Python environment (Python 3.10.0, MacBook Air, VS Code, Pyenv “V1”)
-[x] Set up GitHub repo (each person to make own branch separate from main branch
-[x] Add .gitignore and requirements.txt files
-[x] Install “requests” and “BeautifulSoup” modules
-
----------------------------------------------------------------------------------------------------------------------------
 
 [] Create a crawler.py file and define the skeleton of the crawling algorithm (build from pseudocode).
 - Crawl (=get and parse) all HTML pages on a certain server
@@ -47,21 +20,15 @@ Week 1:
 
 [] Add a function ‘search’ that takes a list of words as a parameter and returns (by using the index) a list of links to all pages that contain all the words from the list.
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-[] Debug and fix issues.
-
-[] Improve efficiency and performance.
-
-----------------------------------------------------------------
+Replace the simple index with code using the woosh library ( will be introduced in week 3 - https://whoosh.readthedocs.io/en/latest/intro.html ).
+Build a flask app (will be introduced in week 3 - ) with two URLs that shows the following behaviour:
+GET home URL: Show search form
+GET search URL with parameter q: Search for q using the index and display a list of URLs as links
 
 
-How to Contribute:
-> Make your own branch separate from main branch.
-> Finish code in your branch.
-> Initiate pull request when ready.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Improve the index by adding information (ideas will be presented in week 4)
+Improve the output by including title and teaser text
+Install your search engine on the demo server provided (will be introduced in week 4)
 
 End goal: Submit the code and the link to the demo deployment by due date (17/11).
 
