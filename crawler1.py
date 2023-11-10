@@ -72,17 +72,17 @@ schema = Schema(title=TEXT(stored=True), content=TEXT)
 index_dir = "indexdir"
 
 # Get the current working directory
-cwd = os.getcwd()
+#cwd = os.getcwd()
 
 # Create the full index directory path
 index_dir_path = os.path.join(cwd, index_dir)
 
 # Delete the directory if it exists
-if os.path.exists(index_dir_path):
-    shutil.rmtree(index_dir_path)
+#if os.path.exists(index_dir_path):
+    #shutil.rmtree(index_dir_path)
 
 # Create the directory
-os.makedirs(index_dir_path)
+#os.makedirs(index_dir_path)
 
 # Now you can create the index in the new directory
 ix = create_in(index_dir_path, schema)
