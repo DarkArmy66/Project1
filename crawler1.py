@@ -84,13 +84,16 @@ def setup_app(crawler):
 
     @app.route('/', methods=['GET'])
     def home():
-        return render_template('home.html')
+        return render_template('home.html', title="Black Cat")
+
 
     @app.route('/search', methods=['GET'])
     def search():
         query = request.args.get('q')
         results = crawler.search(query.split())
-        return render_template('search.html', results=results)
+        return render_template('search.html', query=query, results=results)
+
+
 
     return app
 
@@ -108,3 +111,13 @@ if __name__ == "__main__":
     port = find_available_port()
     print(f"Running server on port {port}")
     app.run(debug=True, port=port)
+
+# if __name__ == "__main__":
+    #writer = setup_index()
+    #crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html', writer)
+    #crawler.crawl()
+    #writer.commit()
+    #app = setup_app(crawler)
+    #port = find_available_port()
+    #print(f"Running server on port {port}")
+    #app.run(host='0.0.0.0', debug=True, port=port)
