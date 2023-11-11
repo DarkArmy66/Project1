@@ -1,6 +1,7 @@
 # Import necessary libraries
 from urllib.parse import urlparse, urljoin
 import os
+import sys
 import socket
 import requests
 from bs4 import BeautifulSoup
@@ -102,7 +103,7 @@ def find_available_port():
         s.bind(('', 0))            # Bind to a free port provided by the host.
         return s.getsockname()[1]  # Return the port number assigned.
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     writer = setup_index()
     crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html', writer)
     crawler.crawl()
@@ -121,3 +122,20 @@ if __name__ == "__main__":
     #port = find_available_port()
     #print(f"Running server on port {port}")
     #app.run(host='0.0.0.0', debug=True, port=port)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python app.py <ip> <port>")
+        sys.exit(1)
+
+    ip = sys.argv[1]
+    port = int(sys.argv[2])
+
+    writer = setup_index()
+    crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html', writer)
+    crawler.crawl()
+    writer.commit()
+    app = setup_app(crawler)
+    print(f"Running server on http://{ip}:{port}")
+    app.run(host=ip, port=port)
