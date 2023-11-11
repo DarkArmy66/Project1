@@ -1,20 +1,19 @@
 # Import necessary libraries
+from urllib.parse import urlparse, urljoin
+import os
+import socket
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, urljoin
+from flask import Flask, render_template, request
 from whoosh.index import create_in, open_dir
 from whoosh.fields import *
-import os
-from whoosh.qparser import QueryParser
-import shutil
-from flask import Flask, render_template, request, redirect, url_for
-import socket
 
 # Define a Crawler class
 class Crawler:
-    def __init__(self, seed_url):
-        # Initialize the crawler with the seed URL
+    def __init__(self, seed_url, writer):
+        # Initialize the crawler with the seed URL and the writer
         self.seed_url = seed_url
+        self.writer = writer
         self.parsed_seed_url = urlparse(seed_url)
         self.visited_urls = set()
         self.urls_to_visit = set([seed_url])
@@ -51,10 +50,9 @@ class Crawler:
                     if parsed_link.netloc == self.parsed_seed_url.netloc and link not in self.visited_urls:
                         self.urls_to_visit.add(link)
 
-        # Print the indexed information
+        # Index the extracted information
         for url, text_content in self.index.items():
-            print(f"URL: {url}\nText Content: {text_content}\n")
-            writer.add_document(title=url, content=text_content)
+            self.writer.add_document(title=url, content=text_content)
 
     def search(self, words):
         # Search the index for the given words
@@ -64,73 +62,49 @@ class Crawler:
                 result.append(url)
         return result
 
-# Define the schema for the index
-schema = Schema(title=TEXT(stored=True), content=TEXT)
+def setup_index():
+    # Define the schema for the index, the name of the directory, get the current working directory, create the full index directory path
+    schema = Schema(title=TEXT(stored=True), content=TEXT)
+    index_dir = "indexdir"
+    cwd = os.getcwd()
+    index_dir_path = os.path.join(cwd, index_dir)
 
-# The name of the directory
-index_dir = "indexdir"
+    # Check if the directory exists, open the existing index or create the directory and a new index in the directory
+    if os.path.exists(index_dir_path):
+        ix = open_dir(index_dir_path)
+    else:
+        os.makedirs(index_dir_path)
+        ix = create_in(index_dir_path, schema)
 
-# Get the current working directory
-cwd = os.getcwd()
+    return ix.writer()
 
-# Create the full index directory path
-index_dir_path = os.path.join(cwd, index_dir)
+def setup_app(crawler):
+    # Define Flask app, routes and functions
+    app = Flask(__name__)
 
-# Check if the directory exists
-if os.path.exists(index_dir_path):
-    # Open the existing index
-    ix = open_dir(index_dir_path)
-else:
-    # Create the directory
-    os.makedirs(index_dir_path)
-    # Create a new index in the directory
-    ix = create_in(index_dir_path, schema)
+    @app.route('/', methods=['GET'])
+    def home():
+        return render_template('home.html')
 
-writer = ix.writer()
+    @app.route('/search', methods=['GET'])
+    def search():
+        query = request.args.get('q')
+        results = crawler.search(query.split())
+        return render_template('search.html', results=results)
 
-# Create a new Crawler instance
-crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html')
-
-# Start crawling
-crawler.crawl()
-
-# Commit the changes to the index
-writer.commit()
-
-# Search the index
-
-# Get the search query from the user
-search_query = input("Enter your search query: ")
-
-with ix.searcher() as searcher:
-    # Parse the user's search query
-    query = QueryParser("content", ix.schema).parse(search_query)
-    results = searcher.search(query)
-    
-    # Print all results
-    for r in results:
-        print(r)
-
-app = Flask(__name__)
-
-@app.route('/', methods=['GET'])
-def home():
-    return render_template('home.html')
-
-@app.route('/search', methods=['GET'])
-def search():
-    query = request.args.get('q')
-    results = crawler.search(query.split())
-    return render_template('search.html', results=results)
-
+    return app
 
 def find_available_port():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(('', 0))            # Bind to a free port provided by the host.
         return s.getsockname()[1]  # Return the port number assigned.
-    app.run(debug=True)
 
 if __name__ == "__main__":
+    writer = setup_index()
+    crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html', writer)
+    crawler.crawl()
+    writer.commit()
+    app = setup_app(crawler)
     port = find_available_port()
     print(f"Running server on port {port}")
     app.run(debug=True, port=port)
