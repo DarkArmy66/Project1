@@ -2,11 +2,13 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
-from whoosh.index import create_in
+from whoosh.index import create_in, open_dir
 from whoosh.fields import *
 import os
 from whoosh.qparser import QueryParser
 import shutil
+from flask import Flask, render_template, request, redirect, url_for
+import socket
 
 # Define a Crawler class
 class Crawler:
@@ -62,31 +64,32 @@ class Crawler:
                 result.append(url)
         return result
 
-# Create a new Crawler instance
-crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html')
-
 # Define the schema for the index
 schema = Schema(title=TEXT(stored=True), content=TEXT)
 
-# The name of the directory to be deleted
+# The name of the directory
 index_dir = "indexdir"
 
 # Get the current working directory
-#cwd = os.getcwd()
+cwd = os.getcwd()
 
 # Create the full index directory path
 index_dir_path = os.path.join(cwd, index_dir)
 
-# Delete the directory if it exists
-#if os.path.exists(index_dir_path):
-    #shutil.rmtree(index_dir_path)
+# Check if the directory exists
+if os.path.exists(index_dir_path):
+    # Open the existing index
+    ix = open_dir(index_dir_path)
+else:
+    # Create the directory
+    os.makedirs(index_dir_path)
+    # Create a new index in the directory
+    ix = create_in(index_dir_path, schema)
 
-# Create the directory
-#os.makedirs(index_dir_path)
-
-# Now you can create the index in the new directory
-ix = create_in(index_dir_path, schema)
 writer = ix.writer()
+
+# Create a new Crawler instance
+crawler = Crawler('https://vm009.rz.uos.de/crawl/index.html')
 
 # Start crawling
 crawler.crawl()
@@ -107,3 +110,27 @@ with ix.searcher() as searcher:
     # Print all results
     for r in results:
         print(r)
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('home.html')
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('q')
+    results = crawler.search(query.split())
+    return render_template('search.html', results=results)
+
+
+def find_available_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(('', 0))            # Bind to a free port provided by the host.
+        return s.getsockname()[1]  # Return the port number assigned.
+    app.run(debug=True)
+
+if __name__ == "__main__":
+    port = find_available_port()
+    print(f"Running server on port {port}")
+    app.run(debug=True, port=port)

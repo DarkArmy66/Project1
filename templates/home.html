@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Black Cat</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        h1, h2 {
+            text-shadow: 3px 3px 3px #333;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background: #333;
+            color: #0f0;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Black Cat</h1>
+        <h2>powered by Clock AI</h2>
+        <form action="/search" method="get">
+            <input type="text" name="q" placeholder="Enter your search query here...">
+            <br>
+            <input type="submit" value="Search">
+        </form>
+    </div>
+</body>
+</html>
